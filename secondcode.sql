@@ -62,6 +62,92 @@ select concat(first_name,"_",last_name) from em where salary<=50000;
 select first_name,salary from em order by salary;
 -- Get all the details of the employee whose salary is between 50000 to 70000 and arrange them by their first name as ascending order.
 select * from em where salary>=50000 and salary<=70000 order by first_name;
+-- 30-07-2025
+-- WILDCARD SEARCH
+--  Get employee details from employee table whose first name starts with 's'
+select first_name from em where first_name like "s%";
+-- Get employee details from employee table whose first name contains 'v'
+select first_name from em where first_name like "%v%";
+-- Get employee details from employee table whose first name ends with 'n'
+select first_name from em where first_name like"%n";
+-- PATTERN MATCHING 
+-- Get employee details from employee table whose first name ends with 'n' and name contains 4 letters
+select * from em where first_name like "___n";
+-- Get employee details from employee table whose first name starts with 'J' and name contains 4 letters
+select * from em where first_name like "j___";
+--  Get employee details from employee table who’s Salary greater than 60000
+select * from em where salary>=60000;
+-- Get employee details from employee table who’s Salary less than 80000
+select first_name from em where salary<=80000;
+--  Get employee details from employee table who’s Salary between 50000 and 80000
+select * from em where salary>=50000 and salary<=80000;
+-- Get employee details from employee table whose name is venkatesh and ragavi
+select * from em where first_name="venkatesh" or first_name ="ragavi";
+-- Queries Interview Questions and Answers on "SQL DATE Functions" - Examples
+--  Get employee details from employee table whose joining year is “2015”
+select *from em where year(joining_date)=2015;
+-- Get employee details from employee table whose joining month is “January”
+select * from em where month(joining_date)="1";
+-- Get employee details from employee table who joined before January 1st 2017
+select * from em where joining_date<"2017-01-01";
+--  Get employee details from employee table who joined after January 31st 2016
+select * from em where joining_date>"2016-01-31";
+-- MATHAMATICAL FUNCTIONS
+select sum(salary) from em;
+select avg(salary) from em;
+select max(salary) from em;
+select count(salary) from em;
+-- GROUP IMPLEMENTATION
+-- Get department,total salary with respect to a department from employee table.
+select department,sum(salary) from em group by department;
+-- Get department,total salary with respect to a department from employee table order by total salary descending
+select department,sum(salary) from em group by department order by  sum(salary) desc;
+--  Get department,no of employees in a department,total salary with respect to a department from employee table order by total salary descending
+select department,count(department),sum(salary) from em group by department order by sum(salary) desc;
+-- Get department wise average salary from employee table order by salary ascending
+select department,avg(salary) from em group by department order by avg(salary) asc;
+-- Get department wise maximum salary from employee table order by salary ascending
+select department,max(salary) from em group by department order by max(salary) asc;
+-- Get department wise minimum salary from employee table order by salary ascending
+select department,min(salary) from em group by department order by min(salary) asc;
+-- Select no of employees joined with respect to year and month from employee table
+select year(joining_date),month(joining_date),count(first_name) from em group by year(joining_date),month(joining_date);
+-- Select department,total salary with respect to a department from employee table where total salary greater than 800000 order by Total_Salary descending
+select department,sum(salary) from em group by department having sum(salary)>=800000 order by sum(salary) desc;
+-- UPDATE
+update em set first_name="yedukondalu",last_name="P" where first_name = "gopinath";
+set sql_safe_updates =0;
+-- DELETE
+delete from em where employee_id=3;
+select*from em;
+
+create table incentive(employee_ref_id int,incentive_date date,incentive_amount long);
+insert into incentive(employee_ref_id,incentive_date,incentive_amount) values(1,"2016-02-01",5000),
+(2,"2016-02-01",3000),
+(3,"2017-02-01",4000),
+(1,"2017-01-01",4500),
+(2,"2017-01-01",3500);
+Alter table  insective rename to incentive;
+show tables;
+select * from incentive;
+-- IT IS JOIN METHOD
+select e.first_name,(e.salary+sum(i.incentive_amount)) from em e join incentive i where e.employee_id = i.employee_ref_id group by e.first_name,e.salary; 
+-- IT IS LEFT JOIN METHOD
+select e.first_name,(e.salary+ifnull(sum(i.incentive_amount),0)) from em e left join incentive i on e.employee_id = i.employee_ref_id group by e.first_name,e.salary;
+-- IT IS RIGHT JOIN METHOD
+select e.first_name,(e.salary+ifnull(sum(i.incentive_amount),0)) from em e right join incentive i on e.employee_id = i.employee_ref_id group by e.first_name,e.salary;
+-- Select first_name, incentive amount from employee and incentives table for those employees who have incentives
+select e.first_name,i.incentive_amount from em e join incentive i where e.employee_id = i.employee_ref_id ;
+-- Select first_name, incentive amount from employee and incentives table for those employees who have incentives and incentive amount greater than 3000
+select e.first_name,i.incentive_amount from em e join incentive i where e.employee_id = i.employee_ref_id order by i.incentive_amount>3000;
+-- Select first_name, incentive amount from employee and incentives table for all employes even if they didn't get incentives
+select e.first_name,i.incentive_amount from em e join incentive i on e.employee_id = i.employee_ref_id;
+-- Select first_name, incentive amount from employee and incentives table for all employees even if they didn't get incentives and set incentive amount as 0 for those employees who didn't get incentives.
+select e.first_name,(ifnull(i.incentive_amount,0)) from em e left join incentive i on e.employee_id = i.employee_ref_id;
+--  Select first_name, incentive amount from employee and incentives table for all employees who got incentives using left join
+select e.first_name,i.incentive_amount from em e left join incentive i on e.employee_id = i.employee_ref_id;
+-- Select max incentive with respect to employee from employee and incentives table using sub query
+select e.first_name,max(i.incentive_amount) from em e join incentive i on e.employee_id = i.employee_ref_id group by e.first_name;
 
 
 
